@@ -1,11 +1,82 @@
 <template>
   <section class="home">
-    <div class="center examplex">
-      <vs-navbar center-collapsed v-model="active">
-        <template #left>
-          <h2>{{ issueData.assignee }}</h2>
+    <vs-navbar
+      target-scroll="#padding-scroll-content"
+      fixed
+      shadow
+      centerCollapsed
+    >
+      <template #left>
+        <h2>XXXX</h2>
+      </template>
+      <template #right>
+        <h2>{{ issueData.assignee }}</h2>
+      </template>
+    </vs-navbar>
+    <div class="content">
+      <vs-table striped>
+        <template #thead>
+          <vs-tr>
+            <vs-th> 项目 </vs-th>
+            <vs-th> 问题类型 </vs-th>
+            <vs-th> 标题 </vs-th>
+            <vs-th> 分类 </vs-th>
+            <vs-th> 子分类 </vs-th>
+            <vs-th> 日期 </vs-th>
+            <vs-th> 工时(hours) </vs-th>
+            <vs-th> 操作 </vs-th>
+          </vs-tr>
         </template>
-      </vs-navbar>
+        <template #tbody>
+          <vs-tr :key="i" v-for="(tr, i) in workLogData" :data="tr">
+            <vs-td>
+              <vs-select placeholder="Select" v-model="tr.projectId">
+                <vs-option
+                  v-for="item in issueData.projects"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                >
+                  {{ item.name }}
+                </vs-option>
+              </vs-select>
+            </vs-td>
+            <vs-td>
+              2
+              <!-- <vs-select filter placeholder="Select" v-model="tr.issueTypeId">
+                <vs-option
+                  v-for="item in curIssueTypes"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                >
+                  {{ item.name }}
+                </vs-option>
+              </vs-select> -->
+            </vs-td>
+            <vs-td> 3</vs-td>
+            <vs-td> 4</vs-td>
+            <vs-td> 5</vs-td>
+            <vs-td> 6</vs-td>
+            <vs-td> 7</vs-td>
+            <vs-td>
+              <vs-button icon flat color="danger">
+                <i class="bx bxs-x-square"></i>
+              </vs-button>
+            </vs-td>
+          </vs-tr>
+        </template>
+      </vs-table>
+      <div>
+        <vs-button
+          icon
+          flat
+          color="success"
+          style="display: block; margin: 0 auto"
+        >
+          <i class="bx bx-add-to-queue"></i>
+        </vs-button>
+      </div>
     </div>
     <vs-dialog
       :loading="loginLoading"
@@ -61,13 +132,25 @@ export default {
       user: {},
       issueData: {
         assignee: "User",
+        projects: [],
       },
       localUser: false,
+      workLogData: [
+        {
+          projectId: "",
+        },
+      ],
+      curIssueTypes: [],
+      aa: "",
     };
   },
   methods: {
     sign() {
       this.loginLoading = true;
+      let loading = null;
+      if (this.localUser) {
+        loading = this.$vs.loading({ type: "corners" });
+      }
       if (this.user.loginName && this.user.password) {
         let params = {
           loginName: this.user.loginName,
@@ -80,6 +163,9 @@ export default {
             this.issueData = data;
             this.loginDialogActive = false;
             this.loginLoading = false;
+            if (loading) {
+              loading.close();
+            }
             localStorage.setItem(
               "user",
               JSON.stringify({
@@ -90,6 +176,9 @@ export default {
           })
           .catch((err) => {
             this.loginLoading = false;
+            if (loading) {
+              loading.close();
+            }
           });
       }
     },
@@ -110,13 +199,15 @@ export default {
 
 <style lang="scss" scoped>
 .home {
-  max-width: 1200px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  margin: auto;
+  .content {
+    margin: 80px;
+    height: 900px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+  }
 }
 .not-margin {
   margin: 0;
