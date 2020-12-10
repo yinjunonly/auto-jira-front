@@ -55,7 +55,7 @@
               <vs-select
                 v-if="tr.typeSelectIsShow"
                 placeholder="请选择"
-                style="width: 200px"
+                style="width: 100px"
                 v-model="tr.issueTypeId"
                 :disabled="!tr.issueTypes"
                 @change="issueTypeChange(tr, i)"
@@ -81,7 +81,7 @@
               <vs-select
                 @change="categoryChange(tr, i)"
                 placeholder="请选择"
-                style="width: 200px"
+                style="width: 100px"
                 v-model="tr.categoryId"
               >
                 <vs-option
@@ -99,7 +99,7 @@
                 @change="subChange(tr, i)"
                 v-if="tr.subSelectIsShow"
                 placeholder="请选择"
-                style="width: 200px"
+                style="width: 100px"
                 v-model="tr.subCategoryId"
                 :disabled="!tr.subCategorys"
               >
@@ -125,6 +125,7 @@
               <vs-input
                 type="number"
                 :min="1"
+                class="hours"
                 @change="hoursChange(tr)"
                 v-model="tr.hours"
                 placeholder="请填写"
@@ -444,6 +445,7 @@ export default {
           hours: item.hours,
         });
       }
+      this.confirmActive = false;
       const loading = this.$vs.loading({
         text: "啪一下，很快啊！就提交了...",
       });
@@ -455,8 +457,11 @@ export default {
             color: "success",
             title: "工时提交成功！",
           });
+          loading.close();
         })
-        .catch((data) => {});
+        .catch((data) => {
+          loading.close();
+        });
     },
   },
   mounted() {
@@ -477,7 +482,7 @@ export default {
 .home {
   .content {
     margin: 80px;
-    max-width: 1650px;
+    max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
     left: 0;
@@ -513,6 +518,11 @@ export default {
     ~ .vs-button {
       margin-left: 10px;
     }
+  }
+}
+.hours {
+  .vs-input {
+    width: 70px;
   }
 }
 </style>
