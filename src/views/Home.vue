@@ -8,6 +8,7 @@
     >
       <template #left>
         <h2>Quick Jira</h2>
+        <span style="color: #f5f5f5">v1.0.0</span>
       </template>
       <template #right>
         <h2>{{ issueData.assignee }}</h2>
@@ -116,7 +117,7 @@
             <vs-td>
               <vs-input
                 type="date"
-                style="width: 150px"
+                style="width: 180px"
                 v-model="tr.logDate"
                 placeholder="请选择"
               />
@@ -458,6 +459,10 @@ export default {
             title: "工时提交成功！",
           });
           loading.close();
+          // 重置数据
+          this.workLogData = [];
+          this.workLogData.push(this.newWorkLog());
+          this.reload(0);
         })
         .catch((data) => {
           loading.close();
@@ -482,7 +487,7 @@ export default {
 .home {
   .content {
     margin: 80px;
-    max-width: 1200px;
+    max-width: 1300px;
     margin-left: auto;
     margin-right: auto;
     left: 0;

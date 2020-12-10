@@ -10,7 +10,7 @@ window.serverConfig = {
     },
     // 测试环境
     test: {
-        host: "http://localhost",
+        host: "http://10.129.222.200",
         port: "9081"
     },
     // 生产环境
