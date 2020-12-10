@@ -169,7 +169,7 @@
       v-model="loginDialogActive"
     >
       <template #header>
-        <h4 class="not-margin">Welcome to <b>Auto-jira</b></h4>
+        <h4 class="not-margin">Welcome to <b>Quick-Jira</b></h4>
       </template>
 
       <div class="con-form">
