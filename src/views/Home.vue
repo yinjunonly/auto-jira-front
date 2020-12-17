@@ -1,11 +1,6 @@
 <template>
   <section class="home">
-    <vs-navbar
-      target-scroll="#padding-scroll-content"
-      fixed
-      shadow
-      centerCollapsed
-    >
+    <vs-navbar target-scroll="#padding-scroll-content" fixed shadow centerCollapsed>
       <template #left>
         <h2>Quick Jira</h2>
         <span style="color: #f5f5f5">v1.0.0</span>
@@ -18,22 +13,20 @@
       <vs-table striped>
         <template #thead>
           <vs-tr>
-            <vs-th>ID </vs-th>
-            <vs-th>项目 </vs-th>
-            <vs-th>问题类型 </vs-th>
-            <vs-th>标题 </vs-th>
-            <vs-th>分类 </vs-th>
-            <vs-th>子分类 </vs-th>
-            <vs-th>日期 </vs-th>
-            <vs-th>工时(hours) </vs-th>
-            <vs-th>操作 </vs-th>
+            <vs-th>ID</vs-th>
+            <vs-th>项目</vs-th>
+            <vs-th>问题类型</vs-th>
+            <vs-th>标题</vs-th>
+            <vs-th>分类</vs-th>
+            <vs-th>子分类</vs-th>
+            <vs-th>日期</vs-th>
+            <vs-th>工时(hours)</vs-th>
+            <vs-th>操作</vs-th>
           </vs-tr>
         </template>
         <template #tbody>
           <vs-tr :key="i" v-for="(tr, i) in workLogData" :data="tr">
-            <vs-td>
-              {{ i + 1 }}
-            </vs-td>
+            <vs-td>{{ i + 1 }}</vs-td>
             <vs-td>
               <vs-select
                 @change="projectChange(tr, i)"
@@ -47,9 +40,7 @@
                   v-for="item in issueData.projects"
                   :label="item.name"
                   :value="item.id"
-                >
-                  {{ item.name }}
-                </vs-option>
+                >{{ item.name }}</vs-option>
               </vs-select>
             </vs-td>
             <vs-td>
@@ -66,17 +57,11 @@
                   :key="item.id"
                   :label="item.name"
                   :value="item.id"
-                >
-                  {{ item.name }}
-                </vs-option>
+                >{{ item.name }}</vs-option>
               </vs-select>
             </vs-td>
             <vs-td>
-              <vs-input
-                @change="summaryChange(tr)"
-                v-model="tr.summary"
-                placeholder="请填写"
-              />
+              <vs-input @change="summaryChange(tr)" v-model="tr.summary" placeholder="请填写" />
             </vs-td>
             <vs-td>
               <vs-select
@@ -90,9 +75,7 @@
                   v-for="item in issueData.categorys"
                   :label="item.name"
                   :value="item.id"
-                >
-                  {{ item.name }}
-                </vs-option>
+                >{{ item.name }}</vs-option>
               </vs-select>
             </vs-td>
             <vs-td>
@@ -109,18 +92,11 @@
                   :key="item.id"
                   :label="item.name"
                   :value="item.id"
-                >
-                  {{ item.name }}
-                </vs-option>
-              </vs-select></vs-td
-            >
+                >{{ item.name }}</vs-option>
+              </vs-select>
+            </vs-td>
             <vs-td>
-              <vs-input
-                type="date"
-                style="width: 180px"
-                v-model="tr.logDate"
-                placeholder="请选择"
-              />
+              <vs-input type="date" style="width: 180px" v-model="tr.logDate" placeholder="请选择" />
             </vs-td>
             <vs-td>
               <vs-input
@@ -158,19 +134,15 @@
         </vs-button>
       </div>
       <div style="margin-top: 10px">
-        <vs-button style="display: block; margin: 0 auto" @click="submit"
-          >提交</vs-button
-        >
+        <vs-button style="display: block; margin: 0 auto" @click="submit">提交</vs-button>
       </div>
     </div>
-    <vs-dialog
-      :loading="loginLoading"
-      prevent-close
-      blur
-      v-model="loginDialogActive"
-    >
+    <vs-dialog :loading="loginLoading" prevent-close blur v-model="loginDialogActive">
       <template #header>
-        <h4 class="not-margin">Welcome to <b>Quick-Jira</b></h4>
+        <h4 class="not-margin">
+          Welcome to
+          <b>Quick-Jira</b>
+        </h4>
       </template>
 
       <div class="con-form">
@@ -178,27 +150,19 @@
           <template #icon>
             <i class="bx bx-user"></i>
           </template>
-          <template v-if="user.loginName === ''" #message-danger>
-            Required
-          </template>
+          <template v-if="user.loginName === ''" #message-danger>Required</template>
         </vs-input>
-        <vs-input
-          type="password"
-          v-model="user.password"
-          placeholder="Password"
-        >
+        <vs-input type="password" v-model="user.password" placeholder="Password">
           <template #icon>
             <i class="bx bxs-lock"></i>
           </template>
-          <template v-if="user.password === ''" #message-danger>
-            Required
-          </template>
+          <template v-if="user.password === ''" #message-danger>Required</template>
         </vs-input>
       </div>
 
       <template #footer>
         <div class="footer-dialog">
-          <vs-button block @click="sign"> Sign In </vs-button>
+          <vs-button block @click="sign">Sign In</vs-button>
         </div>
       </template>
     </vs-dialog>
@@ -212,10 +176,8 @@
       </div>
       <template #footer>
         <div class="con-footer">
-          <vs-button @click="confirm" transparent> 确认 </vs-button>
-          <vs-button @click="confirmActive = false" dark transparent>
-            取消
-          </vs-button>
+          <vs-button @click="confirm" transparent>确认</vs-button>
+          <vs-button @click="confirmActive = false" dark transparent>取消</vs-button>
         </div>
       </template>
     </vs-dialog>
@@ -444,6 +406,7 @@ export default {
           assignee: this.issueData.assignee,
           logDate: item.logDate,
           hours: item.hours,
+          categoryType: this.issueData.ext,
         });
       }
       this.confirmActive = false;
