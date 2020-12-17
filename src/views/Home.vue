@@ -3,7 +3,22 @@
     <vs-navbar target-scroll="#padding-scroll-content" fixed shadow centerCollapsed>
       <template #left>
         <h2>Quick Jira</h2>
-        <span style="color: #f5f5f5">v1.0.0</span>
+        <span style="color: #f5f5f5">v1.0.1</span>
+      </template>
+      <template #default>
+        <vs-tooltip bottom warn>
+          <vs-button warn icon>
+            <i class="bx bx-question-mark"></i>
+          </vs-button>
+          <template #tooltip>
+              现在Quick Jira还在成长中，如果遇到问题可至GayHub提交相关问题
+              <br />已知问题：
+              <br />1.所知现在只支持大部分BMW项目，安利项目及CS产品研发项目，其他项目未经测试无法预料
+              <br />2.同一批只能填同一个项目
+              <br />3.如果出现无法选择分类的情况，请至公司Jira切换到对应项目再进入Quick Jira进行操作
+            </div>
+          </template>
+        </vs-tooltip>
       </template>
       <template #right>
         <h2>{{ issueData.assignee }}</h2>
