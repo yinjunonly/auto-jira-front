@@ -7,6 +7,7 @@
       </template>
       <template #right>
         <h2>{{ issueData.assignee }}</h2>
+        <vs-button @click="out">退出</vs-button>
       </template>
     </vs-navbar>
     <div class="content">
@@ -235,12 +236,13 @@ export default {
               loading.close();
             }
             localStorage.setItem(
-              "user",
+              "userInfo",
               JSON.stringify({
                 loginName: params.loginName,
                 password: params.password,
               })
             );
+            this.user.password = params.password;
             this.workLogData.push(this.newWorkLog());
             this.reload(0);
           })
@@ -431,9 +433,13 @@ export default {
           loading.close();
         });
     },
+    out() {
+      localStorage.removeItem("userInfo");
+      location.reload();
+    },
   },
   mounted() {
-    let user = localStorage.getItem("user");
+    let user = localStorage.getItem("userInfo");
     if (!user) {
       this.loginDialogActive = true;
     } else {
