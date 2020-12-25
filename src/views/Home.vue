@@ -11,11 +11,11 @@
             <i class="bx bx-question-mark"></i>
           </vs-button>
           <template #tooltip>
-              现在Quick Jira还在成长中，如果遇到问题可至GayHub提交相关问题
-              <br />已知问题：
-              <br />1.所知现在只支持大部分BMW项目，安利项目及CS产品研发项目，其他项目未经测试无法预料
-              <br />2.同一批只能填同一个项目
-              <br />3.如果出现无法选择分类的情况，请至公司Jira切换到对应项目再进入Quick Jira进行操作
+            现在Quick Jira还在成长中，如果遇到问题可至GayHub提交相关问题
+            <br />已知问题：
+            <br />1.所知现在只支持大部分BMW项目，安利项目及CS产品研发项目，其他项目未经测试无法预料
+            <br />2.同一批只能填同一个项目
+            <br />3.如果出现无法选择分类的情况，请至公司Jira切换到对应项目再进入Quick Jira进行操作
           </template>
         </vs-tooltip>
       </template>
@@ -25,7 +25,107 @@
       </template>
     </vs-navbar>
     <div class="content">
-      <vs-table striped>
+      <div :key="i" v-for="(tr, i) in workLogData" class="div-content">
+        <vs-button
+          :disabled="workLogData.length === 1"
+          @click="delWorklogData(i)"
+          style="font-size:18px"
+          class="del-button"
+          icon
+          transparent
+          danger
+          animation-type="rotate"
+        >
+          <i class="bx bx-x"></i>
+          <template #animate>
+            <i class="bx bxs-x-square"></i>
+          </template>
+        </vs-button>
+        <div class="card-contnet">
+          <vs-select
+            @change="projectChange(tr, i)"
+            filter
+            plaFceholder="请选择项目"
+            v-model="tr.projectId"
+          >
+            <vs-option
+              :key="item.id"
+              v-for="item in issueData.projects"
+              :label="item.name"
+              :value="item.id"
+            >{{ item.name }}</vs-option>
+          </vs-select>
+          <div style="height: 5px;"></div>
+          <vs-select
+            v-if="tr.typeSelectIsShow"
+            placeholder="请选择问题类型"
+            v-model="tr.issueTypeId"
+            :disabled="!tr.issueTypes"
+            @change="issueTypeChange(tr, i)"
+          >
+            <vs-option
+              v-for="item in tr.issueTypes"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            >{{ item.name }}</vs-option>
+          </vs-select>
+          <div style="height: 5px;"></div>
+          <textarea
+            @change="summaryChange(tr)"
+            v-model="tr.summary"
+            style="border:2px solid transparent;border-radius:12px;color:rgba(44,62,80,1);background-color:rgba(244,247,248);width: 275px;height: 38px;padding: 10px;resize: none;"
+            placeholder="请填写标题"
+          ></textarea>
+          <div style="height: 5px;"></div>
+          <vs-select
+            @change="categoryChange(tr, i)"
+            placeholder="请选择分类"
+            style="width: 100px"
+            v-model="tr.categoryId"
+          >
+            <vs-option
+              :key="item.id"
+              v-for="item in issueData.categorys"
+              :label="item.name"
+              :value="item.id"
+            >{{ item.name }}</vs-option>
+          </vs-select>
+          <div style="height: 5px;"></div>
+          <vs-select
+            @change="subChange(tr, i)"
+            v-if="tr.subSelectIsShow"
+            placeholder="请选择子类"
+            style="width: 100px"
+            v-model="tr.subCategoryId"
+            :disabled="!tr.subCategorys"
+          >
+            <vs-option
+              v-for="item in tr.subCategorys"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            >{{ item.name }}</vs-option>
+          </vs-select>
+          <div style="height: 5px;"></div>
+          <vs-input type="date" v-model="tr.logDate" placeholder="请选择日期" />
+          <div style="height: 5px;"></div>
+          <vs-input
+            type="number"
+            :min="1"
+            class="hours"
+            @change="hoursChange(tr)"
+            v-model="tr.hours"
+            placeholder="请填写"
+          ></vs-input>
+        </div>
+      </div>
+      <div class="add-div">
+        <div class="add-button">
+          <i class="bx bx-add-to-queue"></i>
+        </div>
+      </div>
+      <!-- <vs-table striped>
         <template #thead>
           <vs-tr>
             <vs-th>ID</vs-th>
@@ -136,8 +236,8 @@
             </vs-td>
           </vs-tr>
         </template>
-      </vs-table>
-      <div style="margin-top: 10px">
+      </vs-table>-->
+      <!-- <div style="margin-top: 10px">
         <vs-button
           icon
           flat
@@ -147,7 +247,7 @@
         >
           <i class="bx bx-add-to-queue"></i>
         </vs-button>
-      </div>
+      </div>-->
       <div style="margin-top: 10px">
         <vs-button style="display: block; margin: 0 auto" @click="submit">提交</vs-button>
       </div>
@@ -470,11 +570,46 @@ export default {
 .home {
   .content {
     margin: 80px;
-    max-width: 1300px;
+    max-width: 98%;
     margin-left: auto;
     margin-right: auto;
     left: 0;
     right: 0;
+    .div-content {
+      vertical-align: top;
+      display: inline-block;
+      position: relative;
+      width: 350px;
+      height: 320px;
+      margin: 0 5px 5px 0;
+      border-radius: 12px;
+      padding: 10px;
+      background-color: rgba(30, 30, 30, 0.1);
+      .del-button {
+        position: absolute;
+        right: 4px;
+        top: 2px;
+      }
+    }
+    .add-div {
+      vertical-align: top;
+      display: inline-block;
+      position: relative;
+      width: 350px;
+      height: 320px;
+      margin: 0 5px 5px 0;
+      border-radius: 12px;
+      padding: 10px;
+      background-color: rgba(30, 30, 30, 0.1);
+      .add-button {
+        position: absolute;
+        margin: auto;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+      }
+    }
   }
 }
 .not-margin {
@@ -510,7 +645,16 @@ export default {
 }
 .hours {
   .vs-input {
-    width: 70px;
+    width: 300px;
+  }
+}
+.card-contnet {
+  height: 320px;
+  .vs-select {
+    width: 300px;
+  }
+  .vs-input {
+    width: 300px;
   }
 }
 </style>
