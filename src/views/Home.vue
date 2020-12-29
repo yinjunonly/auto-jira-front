@@ -21,6 +21,9 @@
       </template>
       <template #right>
         <h2>{{ issueData.assignee }}</h2>
+        <vs-button @click="openSetting" border icon>
+          <i class="bx bx-cog"></i>
+        </vs-button>
         <vs-button @click="out">退出</vs-button>
       </template>
     </vs-navbar>
@@ -297,12 +300,37 @@
         </div>
       </template>
     </vs-dialog>
+    <vs-dialog blur v-model="settingActive">
+      <template #header>
+        <h4 class="not-margin">
+          <b>设置</b>
+        </h4>
+      </template>
+      <div class="setting">
+        <div style="margin-bottom:50px">
+          <vs-input type="number" :min="1" label-placeholder="默认工时" v-model="setting.hours" />
+        </div>
+        <vs-input
+          type="number"
+          :min="1"
+          label-placeholder="时间递增间隔"
+          v-model="setting.dateIncrementalInterval"
+        />
+      </div>
+      <template #footer>
+        <div class="con-footer">
+          <vs-button @click="settingOk" transparent>确认</vs-button>
+          <vs-button @click="settingActive = false" dark transparent>取消</vs-button>
+        </div>
+      </template>
+    </vs-dialog>
   </section>
 </template>
 
 <script>
 import { getIssueInfo, createIssueLog } from "../api/apis";
 import { Base64, format } from "../utils/tools";
+import moment from "moment";
 export default {
   name: "Home",
   data() {
@@ -326,6 +354,11 @@ export default {
         subSelectIsShow: true,
       },
       confirmActive: false,
+      settingActive: false,
+      setting: {
+        hours: 8,
+        dateIncrementalInterval: 1,
+      },
     };
   },
   methods: {
@@ -374,7 +407,9 @@ export default {
       this.workLogData[i].issueTypes = this.issueData.issueTypes[tr.projectId];
       this.workLogData[i].typeSelectIsShow = false;
       this.$nextTick(() => {
-        this.workLogData[i].typeSelectIsShow = true;
+        setTimeout(() => {
+          this.workLogData[i].typeSelectIsShow = true;
+        }, 0);
         localStorage.setItem("projectId", tr.projectId);
         if (val) {
           this.workLogData[i].issueTypeId = val;
@@ -420,9 +455,17 @@ export default {
       this.workLogData.splice(i, 1);
     },
     newWorkLog() {
+      let date = moment().startOf("isoWeek").toDate();
+      let dataLen = this.workLogData.length;
+      if (dataLen >= 1) {
+        date = moment(this.workLogData[dataLen - 1].logDate, "YYYY-MM-DD").add(
+          1,
+          "days"
+        );
+      }
       let newWorkLog = {};
       Object.assign(newWorkLog, this.defaultWorkLog);
-      newWorkLog.logDate = format(new Date());
+      newWorkLog.logDate = format(date);
       newWorkLog.projectId = this.getLocalCache("projectId");
       newWorkLog.issueTypeId = this.getLocalCache(
         `${newWorkLog.projectId}_issueTypeId`
@@ -541,8 +584,10 @@ export default {
           loading.close();
           // 重置数据
           this.workLogData = [];
-          this.workLogData.push(this.newWorkLog());
-          this.reload(0);
+          setTimeout(() => {
+            this.workLogData.push(this.newWorkLog());
+            this.reload(0);
+          }, 50);
         })
         .catch((data) => {
           loading.close();
@@ -551,6 +596,9 @@ export default {
     out() {
       localStorage.removeItem("userInfo");
       location.reload();
+    },
+    openSetting() {
+      this.settingActive = true;
     },
   },
   mounted() {
@@ -659,6 +707,11 @@ export default {
   }
   .vs-input {
     width: 300px;
+  }
+}
+.setting {
+  .vs-input {
+    width: 100%;
   }
 }
 </style>
