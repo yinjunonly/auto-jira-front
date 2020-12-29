@@ -59,6 +59,7 @@
           <vs-select
             v-if="tr.typeSelectIsShow"
             placeholder="请选择问题类型"
+            style="width: 100px"
             v-model="tr.issueTypeId"
             :disabled="!tr.issueTypes"
             @change="issueTypeChange(tr, i)"
@@ -121,7 +122,7 @@
         </div>
       </div>
       <div class="add-div">
-        <div class="add-button">
+        <div class="add-button" @click="addWorkLogData">
           <i class="bx bx-add-to-queue"></i>
         </div>
       </div>
@@ -579,7 +580,7 @@ export default {
       vertical-align: top;
       display: inline-block;
       position: relative;
-      width: 350px;
+      width: 326px;
       height: 320px;
       margin: 0 5px 5px 0;
       border-radius: 12px;
@@ -587,27 +588,30 @@ export default {
       background-color: rgba(30, 30, 30, 0.1);
       .del-button {
         position: absolute;
-        right: 4px;
-        top: 2px;
+        right: 0px;
+        top: 0px;
       }
     }
     .add-div {
       vertical-align: top;
       display: inline-block;
       position: relative;
-      width: 350px;
+      width: 326px;
       height: 320px;
       margin: 0 5px 5px 0;
       border-radius: 12px;
       padding: 10px;
       background-color: rgba(30, 30, 30, 0.1);
+      border: 2px dashed grey;
       .add-button {
-        position: absolute;
-        margin: auto;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
+        text-align: center;
+        line-height: 320px;
+        font-size: 50px;
+        color: grey;
+        &:hover {
+          font-size: 55px;
+          color: gray;
+        }
       }
     }
   }
