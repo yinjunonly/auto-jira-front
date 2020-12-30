@@ -3,7 +3,7 @@
     <vs-navbar target-scroll="#padding-scroll-content" fixed shadow centerCollapsed>
       <template #left>
         <h2>Quick Jira</h2>
-        <span style="color: #f5f5f5">v1.0.1</span>
+        <span style="color: #f5f5f5">v2.0.0</span>
       </template>
       <template #default>
         <vs-tooltip bottom warn>
@@ -20,6 +20,11 @@
         </vs-tooltip>
       </template>
       <template #right>
+        <div style="display: inline-block;margin-right:10px;font-size:10px;">
+          <vs-button @click="toGithub" transparent icon>
+            <i class="bx bxl-github"></i>
+          </vs-button>
+        </div>
         <h2>{{ issueData.assignee }}</h2>
         <vs-button @click="openSetting" border icon>
           <i class="bx bx-cog"></i>
@@ -458,10 +463,14 @@ export default {
       let date = moment().startOf("isoWeek").toDate();
       let dataLen = this.workLogData.length;
       if (dataLen >= 1) {
-        date = moment(this.workLogData[dataLen - 1].logDate, "YYYY-MM-DD").add(
-          1,
-          "days"
-        );
+        if (dataLen % this.setting.dateIncrementalInterval === 0) {
+          date = moment(
+            this.workLogData[dataLen - 1].logDate,
+            "YYYY-MM-DD"
+          ).add(1, "days");
+        } else {
+          date = moment(this.workLogData[dataLen - 1].logDate, "YYYY-MM-DD");
+        }
       }
       let newWorkLog = {};
       Object.assign(newWorkLog, this.defaultWorkLog);
@@ -476,7 +485,7 @@ export default {
       );
       newWorkLog.hours = this.getLocalCache("hours")
         ? parseInt(this.getLocalCache("hours"))
-        : 4;
+        : this.setting.hours;
       newWorkLog.summary = this.getLocalCache("summary");
       return newWorkLog;
     },
@@ -598,7 +607,21 @@ export default {
       location.reload();
     },
     openSetting() {
+      let setting = localStorage.getItem("setting");
+      if (setting) {
+        this.setting = JSON.parse(setting);
+      } else {
+        this.setting.hours = 8;
+        this.setting.dateIncrementalInterval = 1;
+      }
       this.settingActive = true;
+    },
+    settingOk() {
+      localStorage.setItem("setting", JSON.stringify(this.setting));
+      this.settingActive = false;
+    },
+    toGithub() {
+      window.open("https://github.com/yinjunonly");
     },
   },
   mounted() {
@@ -610,6 +633,10 @@ export default {
       this.localUser = true;
       this.user = user;
       this.sign();
+    }
+    let setting = localStorage.getItem("setting");
+    if (setting) {
+      this.setting = JSON.parse(setting);
     }
   },
 };
