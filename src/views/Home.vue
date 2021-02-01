@@ -3,7 +3,7 @@
     <vs-navbar target-scroll="#padding-scroll-content" fixed shadow centerCollapsed>
       <template #left>
         <h2>Quick Jira</h2>
-        <span style="color: #f5f5f5">v2.0.0</span>
+        <span style="color: #f5f5f5">v2.0.1</span>
       </template>
       <template #default>
         <vs-tooltip bottom warn>
@@ -333,6 +333,7 @@
 </template>
 
 <script>
+import tip from "./Tip";
 import { getIssueInfo, createIssueLog } from "../api/apis";
 import { Base64, format } from "../utils/tools";
 import moment from "moment";
@@ -379,6 +380,7 @@ export default {
           password: this.localUser
             ? this.user.password
             : Base64.encode(this.user.password),
+          q: moment().unix(),
         };
         getIssueInfo(params)
           .then((data) => {
@@ -589,6 +591,7 @@ export default {
             position: "top-center",
             color: "success",
             title: "工时提交成功！",
+            content: tip,
           });
           loading.close();
           // 重置数据

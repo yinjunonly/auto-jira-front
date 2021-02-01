@@ -10,12 +10,11 @@ window.serverConfig = {
     },
     // 测试环境
     test: {
-        host: "http://10.129.222.200",
+        host: "http://10.4.37.180",
         port: "9081"
     },
     // 生产环境
     prod: {
-        host: "http://localhost",
-        port: "9081"
+        host: "http://quick.cn1.utools.club/"
     }
 };
