@@ -1,5 +1,5 @@
 module.exports = {
-    publicPath: "/",
+    publicPath: "/home",
     productionSourceMap: false,
     transpileDependencies: [
         'vue-echarts',

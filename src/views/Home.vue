@@ -3,7 +3,7 @@
     <vs-navbar target-scroll="#padding-scroll-content" fixed shadow centerCollapsed>
       <template #left>
         <h2>Quick Jira</h2>
-        <span style="color: #f5f5f5">v2.0.1</span>
+        <span style="color: #f5f5f5">v2.0.2</span>
       </template>
       <template #default>
         <vs-tooltip bottom warn>
@@ -402,7 +402,11 @@ export default {
             this.reload(0);
           })
           .catch((err) => {
+            localStorage.removeItem("userInfo");
             this.loginLoading = false;
+            if (!this.loginDialogActive) {
+              location.reload();
+            }
             if (loading) {
               loading.close();
             }
